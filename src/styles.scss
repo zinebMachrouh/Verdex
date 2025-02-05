@@ -1,1 +1,20 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap');
+
+*{
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+  font-family: "Josefin Sans", serif;
+}
+
+:root{
+  --night: #141414ff;
+  --dark-slate-gray: #153e3dff;
+  --caribbean-current: #156866ff;
+  --dark-cyan: #1e9290ff;
+  --verdigris: #55acabff;
+  --light-blue: #c3e0e0ff;
+  --seasalt: #fafafaff;
+  --carmine: #921e20ff;
+}

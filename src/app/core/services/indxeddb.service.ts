@@ -1,13 +1,15 @@
 import { Injectable } from '@angular/core';
 import { openDB, IDBPDatabase } from 'idb';
+import * as bcrypt from 'bcryptjs';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable({
   providedIn: 'root'
 })
 export class IndxeddbService {
   private dbName = 'VerdexDB';
-  private dbVersion = 1;
-  private readonly db : Promise<IDBPDatabase>
+  private dbVersion = 2;
+  private readonly db: Promise<IDBPDatabase>;
 
   constructor() {
     this.db = this.initDB();
@@ -15,32 +17,43 @@ export class IndxeddbService {
 
   private async initDB(): Promise<IDBPDatabase> {
     return openDB(this.dbName, this.dbVersion, {
-      upgrade(db) {
-        if (!db.objectStoreNames.contains('users')) {
-          const userStore = db.createObjectStore('users', { keyPath: 'id'});
+      upgrade(db, oldVersion, newVersion, transaction) {
+        if (oldVersion < 1) {
+          const userStore = db.createObjectStore('users', { keyPath: 'id', autoIncrement: true });
           userStore.createIndex('email', 'email', { unique: true });
-          userStore.createIndex('password', 'password', { unique: false });
-          userStore.createIndex('name', 'name', { unique: false });
-          userStore.createIndex('address', 'address', { unique: false });
+          userStore.createIndex('password', 'password');
+          userStore.createIndex('name', 'name');
+          userStore.createIndex('address', 'address');
           userStore.createIndex('phone', 'phone', { unique: true });
-          userStore.createIndex('birthday', 'birthday', { unique: false });
-          userStore.createIndex('role', 'role', { unique: false });
+          userStore.createIndex('birthday', 'birthday');
+          userStore.createIndex('role', 'role');
+
+          const requestStore = db.createObjectStore('requests', { keyPath: 'id', autoIncrement: true });
+          requestStore.createIndex('user_id', 'user_id');
+          requestStore.createIndex('collector_id', 'collector_id');
+          requestStore.createIndex('type', 'type');
+          requestStore.createIndex('weight', 'weight');
+          requestStore.createIndex('status', 'status');
+          requestStore.createIndex('address', 'address');
+          requestStore.createIndex('schedule', 'schedule');
+          requestStore.createIndex('points', 'points');
         }
-
-        if (!db.objectStoreNames.contains('requests')){
-          const requestStore = db.createObjectStore('requests', { keyPath: 'id'});
-          requestStore.createIndex('user_id', 'user_id', { unique: false });
-          requestStore.createIndex('collector_id', 'collector_id', { unique: false });
-          requestStore.createIndex('type', 'type', { unique: false });
-          requestStore.createIndex('weight', 'weight', { unique: false });
-          requestStore.createIndex('status', 'status', { unique: false });
-          requestStore.createIndex('address', 'address', { unique: false });
-          requestStore.createIndex('schedule', 'schedule', { unique: false });
-          requestStore.createIndex('points', 'points', { unique: false });
-
+        const salt = bcrypt.genSaltSync(10);
+        if (oldVersion < 2) {
+          const userStore = transaction.objectStore('users');
+          userStore.add({
+            id : uuidv4(),
+            email: 'liam@verdex.com',
+            password: bcrypt.hashSync("password123", salt),
+            name: 'Liam Smith',
+            address: '123 Main St, New York, NY',
+            phone: '0612345678',
+            birthday: '1990-01-01',
+            role: 'collector'
+          });
         }
       }
-    })
+    });
   }
 
   getAll(table: string): Promise<any[]> {
