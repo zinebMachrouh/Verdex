@@ -1,90 +1,94 @@
 import { Injectable } from '@angular/core';
-import { IndxeddbService } from "../../../core/services/indxeddb.service";
-import { BehaviorSubject } from "rxjs";
+import bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
-import * as bcrypt from 'bcryptjs';
+import {IndxeddbService} from "../../../core/services/indxeddb.service";
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class AuthService {
-  private currentUserSubject = new BehaviorSubject<any | null>(null);
-  currentUser$ = this.currentUserSubject.asObservable();
+  private sessionExpiry = 45 * 60 * 1000;
 
-  private sessionTimeout: any;
-  private sessionDuration = 60 * 60 * 1000;
+  constructor(private dbService: IndxeddbService) {}
 
-  constructor(private dbService: IndxeddbService) {
-    this.restoreSession();
-  }
+  async register(formData: FormData, profilePicture: File | null): Promise<string> {
+    try {
+      const email = formData.get('email') as string;
+      const password = formData.get('password') as string;
+      const name = formData.get('name') as string;
+      const phone = formData.get('phone') as string;
+      const address = formData.get('address') as string;
+      const birthday = formData.get('birthday') as string;
+      const role = formData.get('role') as string;
 
-  async register(user: any): Promise<string> {
-    const existingUsers = await this.dbService.getAll('users');
-    if (existingUsers.some(u => u.email === user.email)) {
-      return 'Email already registered';
+      if (!email || !password || !name || !phone || !address || !birthday || !role) {
+        throw new Error('Missing required registration fields');
+      }
+
+      const existingUsers = await this.dbService.getAll('users');
+      if (existingUsers.some(u => u.email === email)) {
+        return 'Email already registered';
+      }
+
+      const salt = bcrypt.genSaltSync(10);
+      const hashedPassword = bcrypt.hashSync(password, salt);
+      const id = uuidv4();
+      const user = {
+        id,
+        email,
+        password: hashedPassword,
+        name,
+        phone,
+        address,
+        birthday,
+        role,
+        active: true,
+        picture: profilePicture ? await this.convertImageToBase64(profilePicture) : ''
+      };
+
+      console.log('Registering user', user);
+      await this.dbService.add('users', user);
+      return 'Registration successful';
+    } catch (error) {
+      console.error('Registration failed', error);
+      return 'Registration failed';
     }
-
-    const salt = bcrypt.genSaltSync(10);
-    user.password = bcrypt.hashSync(user.password, salt);
-    user.id = uuidv4();
-    await this.dbService.add('users', user);
-    return 'Registration successful';
   }
+
 
   async login(email: string, password: string): Promise<string> {
-    const users = await this.dbService.getAll('users');
-    const user = users.find(u => u.email === email);
-
-    if (!user.active) {
-      return 'Account is not active';
-    }else if (!user){
-      return 'Account does not exist';
-    }else if(!bcrypt.compareSync(password, user.password)){
-      return 'Incorrect password';
+    try {
+      const users = await this.dbService.getAll('users');
+      const user = users.find(u => u.email === email);
+      if (!user) {
+        return 'Account does not exist';
+      }
+      if (!user.active) {
+        return 'Account is not active';
+      }
+      if (!bcrypt.compareSync(password, user.password)) {
+        return 'Incorrect password';
+      }
+      this.startSession(user);
+      return 'Login successful';
+    } catch (error) {
+      console.error('Login failed', error);
+      return 'Login failed';
     }
-
-    this.startSession(user);
-    return 'Login successful';
-  }
-
-  logout(): void {
-    this.clearSession();
-    this.currentUserSubject.next(null);
-  }
-
-  isAuthenticated(): boolean {
-    return !!this.currentUserSubject.value;
   }
 
   private startSession(user: any): void {
-    this.currentUserSubject.next(user);
     sessionStorage.setItem('currentUser', JSON.stringify(user));
-
-    this.clearSessionTimeout();
-
-    this.sessionTimeout = setTimeout(() => {
-      this.logout();
-      alert('Session expired. Please log in again.');
-    }, this.sessionDuration);
+    setTimeout(() => {
+      sessionStorage.removeItem('currentUser');
+      alert('Session expired. Please login again.');
+    }, this.sessionExpiry);
   }
 
-  private clearSession(): void {
-    this.clearSessionTimeout();
-    sessionStorage.removeItem('currentUser');
-  }
-
-  private clearSessionTimeout(): void {
-    if (this.sessionTimeout) {
-      clearTimeout(this.sessionTimeout);
-      this.sessionTimeout = null;
-    }
-  }
-
-  private restoreSession(): void {
-    const user = sessionStorage.getItem('currentUser');
-    if (user) {
-      this.currentUserSubject.next(JSON.parse(user));
-      this.startSession(JSON.parse(user));
-    }
+  private convertImageToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = error => reject(error);
+    });
   }
 }

@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 })
 export class IndxeddbService {
   private dbName = 'VerdexDB';
-  private dbVersion = 2;
+  private dbVersion = 3;
   private readonly db: Promise<IDBPDatabase>;
 
   constructor() {
@@ -27,6 +27,7 @@ export class IndxeddbService {
           userStore.createIndex('phone', 'phone', { unique: true });
           userStore.createIndex('birthday', 'birthday');
           userStore.createIndex('role', 'role');
+          userStore.createIndex('picture', 'picture');
 
           const requestStore = db.createObjectStore('requests', { keyPath: 'id', autoIncrement: true });
           requestStore.createIndex('user_id', 'user_id');
@@ -37,42 +38,59 @@ export class IndxeddbService {
           requestStore.createIndex('address', 'address');
           requestStore.createIndex('schedule', 'schedule');
           requestStore.createIndex('points', 'points');
+          requestStore.createIndex('photo', 'photo');
         }
+
         const salt = bcrypt.genSaltSync(10);
         if (oldVersion < 2) {
           const userStore = transaction.objectStore('users');
           userStore.add({
-            id : uuidv4(),
+            id: uuidv4(),
             email: 'liam@verdex.com',
             password: bcrypt.hashSync("password123", salt),
             name: 'Liam Smith',
             address: '123 Main St, New York, NY',
             phone: '0612345678',
             birthday: '1990-01-01',
-            role: 'collector'
+            role: 'collector',
+            picture: null
           });
         }
       }
     });
   }
 
-  getAll(table: string): Promise<any[]> {
+  async storeImage(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = error => reject(error);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async getImageBlob(table: string, key: any): Promise<string | null> {
+    const record = await this.get(table, key);
+    return record?.picture || record?.photo || null;
+  }
+
+  async getAll(table: string): Promise<any[]> {
     return this.db.then(db => db.getAll(table));
   }
 
-  get(table: string, key: any): Promise<any> {
+  async get(table: string, key: any): Promise<any> {
     return this.db.then(db => db.get(table, key));
   }
 
-  add(table: string, value: any): Promise<any> {
+  async add(table: string, value: any): Promise<any> {
     return this.db.then(db => db.add(table, value));
   }
 
-  put(table: string, value: any): Promise<any> {
+  async put(table: string, value: any): Promise<any> {
     return this.db.then(db => db.put(table, value));
   }
 
-  delete(table: string, key: any): Promise<any> {
+  async delete(table: string, key: any): Promise<any> {
     return this.db.then(db => db.delete(table, key));
   }
 }
