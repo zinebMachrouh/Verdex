@@ -53,7 +53,7 @@ export class IndxeddbService {
             phone: '0612345678',
             birthday: '1990-01-01',
             role: 'collector',
-            picture: null
+            picture: ""
           });
         }
       }
