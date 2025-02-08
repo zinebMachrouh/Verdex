@@ -32,13 +32,14 @@ export class IndxeddbService {
           const requestStore = db.createObjectStore('requests', { keyPath: 'id', autoIncrement: true });
           requestStore.createIndex('user_id', 'user_id');
           requestStore.createIndex('collector_id', 'collector_id');
-          requestStore.createIndex('type', 'type');
+          requestStore.createIndex('types', 'types');
           requestStore.createIndex('weight', 'weight');
           requestStore.createIndex('status', 'status');
           requestStore.createIndex('address', 'address');
           requestStore.createIndex('schedule', 'schedule');
           requestStore.createIndex('points', 'points');
-          requestStore.createIndex('photo', 'photo');
+          requestStore.createIndex('photos', 'photos');
+          requestStore.createIndex('notes', 'notes');
         }
 
         const salt = bcrypt.genSaltSync(10);

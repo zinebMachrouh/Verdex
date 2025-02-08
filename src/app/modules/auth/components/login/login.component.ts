@@ -31,7 +31,7 @@ export class LoginComponent {
       const { email, password } = this.loginForm.value;
 
       this.authService.login(email, password)
-        .then(response => console.log(response))
+        .then(response => this.router.navigate(['/dashboard']))
         .catch(err => console.error(err));
     }
   }
