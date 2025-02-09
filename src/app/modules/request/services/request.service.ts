@@ -49,7 +49,15 @@ export class RequestService {
   }
 
   private update(request: CollectionRequest): Promise<CollectionRequest> {
-    return this.indexedDbService.put('requests', request);
+    const completeRequest: CollectionRequest = {
+      ...request,
+      status: 'pending',
+      userId: this.userId,
+      collectorId : '',
+      // @ts-ignore
+      points: this.calculatePoints(request)
+    };
+    return this.indexedDbService.put('requests', completeRequest);
   }
 
   updateRequest(request: CollectionRequest): Observable<CollectionRequest> {

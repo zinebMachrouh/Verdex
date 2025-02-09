@@ -30,7 +30,7 @@ export class RequestCardComponent {
   }
 
   onEdit() {
-    if (this.edit) {
+    if (this.edit && this.request && this.request.status === 'pending') {
       this.edit.emit(this.request);
     }
   }

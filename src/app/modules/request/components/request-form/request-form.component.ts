@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {CollectionRequest} from "../../models/request.model";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
@@ -15,7 +15,7 @@ import {NgClass, NgForOf, NgIf} from "@angular/common";
   ],
   styleUrls: ['./request-form.component.scss']
 })
-export class RequestFormComponent {
+export class RequestFormComponent implements OnChanges{
   @Input() types: string[] = [];
   @Input() isVisible = false;
   @Input() currentPendingRequests: CollectionRequest[] = [];

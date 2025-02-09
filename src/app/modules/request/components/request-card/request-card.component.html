@@ -5,7 +5,7 @@
         <h4 class="date">{{formatScheduleDate(request.schedule)}}</h4>
         <h4 class="time">{{formatScheduleTime(request.schedule)}}</h4>
       </div>
-      <button *ngIf="isUser" type="button" class="delete" (click)="onDelete()">
+      <button *ngIf="isUser && request.status === 'pending'" type="button" class="delete" (click)="onDelete()">
         <i class="fa-solid fa-xmark"></i>
       </button>
       <button *ngIf="!isUser" type="button" class="delete">
