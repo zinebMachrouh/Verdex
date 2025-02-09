@@ -7,6 +7,7 @@ import {RequestService} from "../../services/request.service";
 import {CollectionRequest} from "../../models/request.model";
 import {RequestFormComponent} from "../request-form/request-form.component";
 import {RequestCardComponent} from "../request-card/request-card.component";
+import {ProfileComponent} from "../../../user/components/profile/profile.component";
 
 @Component({
   selector: 'app-request-list',
@@ -17,7 +18,9 @@ import {RequestCardComponent} from "../request-card/request-card.component";
     NgForOf,
     RequestFormComponent,
     RequestCardComponent,
-    NgClass
+    NgClass,
+    ProfileComponent,
+    ProfileComponent
   ],
   templateUrl: './request-list.component.html',
   styleUrl: './request-list.component.scss'
@@ -34,6 +37,7 @@ export class RequestListComponent  implements OnInit{
   user: any;
   isUser: boolean = false;
   currentPendingRequests: CollectionRequest[] = [];
+  showProfile: boolean = false;
 
   constructor(private requestService: RequestService) {
     this.user = JSON.parse(<string>sessionStorage.getItem('currentUser'));
@@ -64,11 +68,23 @@ export class RequestListComponent  implements OnInit{
   protected getAllRequests() {
     this.activeType = 'all';
     this.requestService.getRequests().subscribe(requests => {
-      this.requests = requests.filter(request => request.userId === this.user.id);
-      this.originalRequests = [...this.requests];
-      this.requestsCount = this.requests.length;
-      this.currentPendingRequests = this.requests.filter(request => request.status === 'pending' && request.userId === this.user.id);
+      if (this.user.role === 'user') {
+        this.requests = requests.filter(request => request.userId === this.user.id);
+        this.currentPendingRequests = this.requests.filter(request => request.status === 'pending' && request.userId === this.user.id);
+        this.originalRequests = [...this.requests];
+        this.requestsCount = this.requests.length;
+      }else{
+        this.requests = requests.filter(request => {
+          const userAddress = this.user.address.toLowerCase();
+          const requestAddress = request.address.toLowerCase();
 
+          return userAddress.split(', ').some((segment: string) => requestAddress.includes(segment));
+        });
+        console.log('requests:',requests);
+        console.log(this.user.address);
+        this.originalRequests = [...this.requests];
+        this.requestsCount = this.requests.length;
+      }
     });
   }
 
@@ -131,4 +147,12 @@ export class RequestListComponent  implements OnInit{
     }
   }
 
+  openProfile() {
+    console.log('open profile');
+    this.showProfile = true;
+  }
+
+  onCloseProfile() {
+    this.showProfile = false;
+  }
 }

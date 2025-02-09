@@ -110,10 +110,57 @@
       flex-direction: column;
       gap: 0.4rem;
       color: var(--night);
-
     }
 
-    button{
+    .actions{
+      display: flex;
+      flex-direction: row;
+      gap: 0.5rem;
+
+      .accept{
+        background: var(--night);
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 200px;
+        outline: none;
+        cursor: pointer;
+        color: var(--seasalt);
+        border: 2px solid var(--night);
+        font-size: 0.9rem;
+        transition: all 0.3s ease-in-out;
+
+        &:hover{
+          background: #1E1E1E;
+          transition: all 0.3s ease-in-out;
+        }
+      }
+
+      .reject {
+        background: transparent;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 200px;
+        outline: none;
+        cursor: pointer;
+        color: var(--night);
+        border: 2px solid var(--night);
+        font-size: 0.9rem;
+        transition: all 0.3s ease-in-out;
+
+        &:hover {
+          background: #F4F7F7;
+          transition: all 0.3s ease-in-out;
+        }
+      }
+    }
+
+    .edit{
       background: var(--night);
       padding: 10px 15px;
       border-radius: 200px;
@@ -132,3 +179,4 @@
     }
   }
 }
+

@@ -27,8 +27,21 @@
       <h4>{{request.weight/1000}} Kg</h4>
       <span style="opacity: 0.7">{{request.address}}</span>
     </div>
-    <button type="button" class="status" (click)="onEdit()">
-      <span>{{request.status}}</span>
-    </button>
+    <div>
+      <button *ngIf="isUser && request.status === 'pending'" type="button" class="edit" (click)="onEdit()">
+       {{request.status}}
+      </button>
+      <div *ngIf="!isUser && request.status === 'pending'"  class="actions">
+        <button type="button" class="reject" (click)="updateStatus('rejected')">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <button type="button" class="accept" (click)="updateStatus('approved')">
+          <i class="fa-solid fa-check"></i>
+        </button>
+      </div>
+      <button *ngIf="request.status != 'pending'" type="button" class="edit">
+        {{request.status}}
+      </button>
+    </div>
   </div>
 </div>

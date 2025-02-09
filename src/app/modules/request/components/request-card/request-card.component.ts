@@ -1,6 +1,8 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {formatDate, NgForOf, NgIf, NgStyle} from "@angular/common";
 import {on} from "@ngrx/store";
+import {updateRequestStatus} from "../../state/request.actions";
+import {RequestService} from "../../services/request.service";
 
 @Component({
   selector: 'app-request-card',
@@ -18,6 +20,8 @@ export class RequestCardComponent {
   @Input() isUser!: boolean;
   @Output() delete = new EventEmitter<unknown>();
   @Output() edit = new EventEmitter<unknown>();
+
+  constructor(private requestService: RequestService) {}
 
   formatScheduleDate(schedule: any) {
     const date = new Date(schedule);
@@ -41,4 +45,9 @@ export class RequestCardComponent {
     }
   }
 
+
+  updateStatus(status: string) {
+    this.requestService.updateRequestStatus(this.request.id, status).subscribe();
+    window.location.reload();
+  }
 }
