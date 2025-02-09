@@ -21,7 +21,6 @@ import {RequestFormComponent} from "../request-form/request-form.component";
   styleUrl: './request-list.component.scss'
 })
 export class RequestListComponent  implements OnInit{
-  name: string = 'John Doe';
   requestsCount: number = 0;
   searchControl = new FormControl('');
   requests: any[] = [];
@@ -30,12 +29,15 @@ export class RequestListComponent  implements OnInit{
   selectedRequest: CollectionRequest | null = null;
   activeType: string = 'all';
   types = ['plastic', 'paper', 'glass', 'metal'];
-  @Input() user!: any;
+  user: any;
 
-  constructor(private requestService: RequestService) {}
+  constructor(private requestService: RequestService) {
+    this.user = JSON.parse(<string>sessionStorage.getItem('currentUser'));
+  }
 
   ngOnInit(): void {
     this.getAllRequests();
+
 
     this.searchControl.valueChanges.pipe(
       debounceTime(300),

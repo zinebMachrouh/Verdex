@@ -143,6 +143,7 @@
         flex-direction: column;
         gap: 0.5rem;
         justify-self: flex-end;
+        margin-top: 110px;
 
         span{
           opacity: 0.4;
@@ -168,6 +169,15 @@
           &.active{
             i{
               color: var(--dark-cyan);
+            }
+          }
+
+          &.logout{
+            color: #f13131;
+            &:hover{
+              i{
+                color: #f13131;
+              }
             }
           }
         }

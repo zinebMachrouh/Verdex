@@ -8,10 +8,10 @@
       <nav>
         <span>Overview</span>
         <a routerLink="/dashboard" routerLinkActive="active"><i class="fa-solid fa-house"></i> Home</a>
-        <a routerLink="tracks" ><i class="fa-solid fa-music"></i> Songs</a>
-        <a routerLink="albums" routerLinkActive="active"><i class="fa-solid fa-record-vinyl"></i> Albums</a>
-        <a routerLink="podcasts"><i class="fa-solid fa-podcast"></i> Podcasts</a>
-        <a routerLink="#" (click)="logout()"><i class="fa-solid fa-right-from-bracket"></i> LogOut</a>
+        <a routerLink="map" ><i class="fa-solid fa-map"></i> Map</a>
+        <a routerLink="reports" routerLinkActive="active"><i class="fa-solid fa-triangle-exclamation"></i> Reports</a>
+        <a routerLink="notifications"><i class="fa-solid fa-inbox"></i> Inbox</a>
+        <a routerLink="stats"><i class="fa-solid fa-chart-simple"></i> Statistics</a>
       </nav>
       <div class="collections">
         <span class="c-span">Collectors</span>
@@ -48,11 +48,11 @@
       <div class="settings">
         <span>Settings</span>
         <a routerLink="/settings" routerLinkActive="active"><i class="fa-solid fa-gear"></i> Setting</a>
-        <a routerLink="#" (click)="logout()"><i class="fa-solid fa-right-from-bracket"></i> LogOut</a>
+        <a routerLink="#" (click)="logout()" class="logout"><i class="fa-solid fa-right-from-bracket"></i> LogOut</a>
       </div>
     </header>
     <main>
-      <app-request-list [user]="user"></app-request-list>
+      <app-request-list></app-request-list>
     </main>
   </div>
 </section>

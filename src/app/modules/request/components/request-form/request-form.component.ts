@@ -18,6 +18,9 @@ import {NgClass, NgForOf, NgIf} from "@angular/common";
 export class RequestFormComponent {
   @Input() types: string[] = [];
   @Input() isVisible = false;
+  @Input() maxRequestsAllowed = 3;
+  @Input() totalWeightLimit = 10_000;
+  @Input() currentPendingRequests: CollectionRequest[] = [];
   @Input() request: CollectionRequest | null = null;
   @Output() close = new EventEmitter<void>();
   @Output() save = new EventEmitter<{ requestData: CollectionRequest, wastePhoto: File | null }>();
@@ -28,9 +31,9 @@ export class RequestFormComponent {
   constructor(private fb: FormBuilder) {
     this.requestForm = this.fb.group({
       types: ['', Validators.required],
-      weight: ['', Validators.required],
+      weight: ['',  [Validators.required, Validators.min(1000), Validators.max(this.totalWeightLimit)]],
       address: ['', Validators.required],
-      schedule: ['', Validators.required],
+      schedule: ['',  [Validators.required, this.validateTimeSlot.bind(this)]],
       photos: [''],
       notes: ['']
     });
@@ -59,9 +62,47 @@ export class RequestFormComponent {
   }
 
   onSubmit(): void {
+    if (this.requestForm.invalid || this.checkMaxRequests() || this.checkMaxWeightExceeded()) {
+      return;
+    }
+
     if (this.requestForm.valid) {
       const requestData = this.requestForm.value;
       this.save.emit({ requestData, wastePhoto: this.selectedFile });
+    }
+  }
+
+  private checkMaxRequests(): boolean {
+    const activeRequests = this.currentPendingRequests.filter(
+      req => req.status === 'pending' || req.status === 'rejected'
+    ).length;
+
+    if (activeRequests >= this.maxRequestsAllowed) {
+      alert(`Maximum of ${this.maxRequestsAllowed} active requests allowed.`);
+      return true;
+    }
+    return false;
+  }
+
+  private checkMaxWeightExceeded(): boolean {
+    const currentWeight = this.currentPendingRequests.reduce((sum, req) => sum + (req.weight || 0), 0);
+    const newWeight = currentWeight + this.requestForm.get('weight')?.value;
+
+    if (newWeight > this.totalWeightLimit) {
+      alert(`Total weight cannot exceed ${this.totalWeightLimit} grams.`);
+      return true;
+    }
+    return false;
+  }
+
+  private validateTimeSlot(control: any):  boolean  | null {
+    const schedule = new Date(control.value);
+    const hours = schedule.getHours();
+    if (hours < 9 || hours > 18) {
+      alert('The schedule time must be between 09:00 and 18:00.');
+      return false;
+    }else {
+      return true;
     }
   }
 

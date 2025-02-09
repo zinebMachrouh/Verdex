@@ -9,7 +9,10 @@ import { catchError, map } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class RequestService {
-  constructor(private indexedDbService: IndxeddbService) {}
+  userId : string;
+  constructor(private indexedDbService: IndxeddbService) {
+    this.userId = JSON.parse(<string>sessionStorage.getItem('currentUser')).id;
+  }
 
   getRequests(): Observable<CollectionRequest[]> {
     return from(this.indexedDbService.getAll('requests')).pipe(
@@ -34,6 +37,8 @@ export class RequestService {
       ...request,
       id: uuidv4(),
       status: 'pending',
+      userId: this.userId,
+      collectorId : '',
       // @ts-ignore
       points: this.calculatePoints(request)
     };
