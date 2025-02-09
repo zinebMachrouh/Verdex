@@ -3,10 +3,10 @@ export interface CollectionRequest {
   types: string[];
   weight: number;
   address: string;
-  preferredDateTime: Date;
+  schedule: string;
   notes?: string;
   status: string;
   userId: string;
   collectorId?: string;
-  photos?: string[];
+  photos?: string;
 }

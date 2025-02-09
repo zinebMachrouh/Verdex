@@ -78,12 +78,14 @@ export class AuthService {
   }
 
   private startSession(user: any): void {
+    this.currentUser$ = user;
     sessionStorage.setItem('currentUser', JSON.stringify(user));
     setTimeout(() => {
       sessionStorage.removeItem('currentUser');
       alert('Session expired. Please login again.');
     }, this.sessionExpiry);
   }
+
 
   private convertImageToBase64(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -94,8 +96,15 @@ export class AuthService {
     });
   }
 
+
   public isAuthenticated(): boolean {
     const user = sessionStorage.getItem('currentUser');
-    return !!user;
+    return user !== null && user !== undefined;
+  }
+
+
+  public logout(): void {
+    sessionStorage.removeItem('currentUser');
+
   }
 }

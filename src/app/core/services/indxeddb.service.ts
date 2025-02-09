@@ -45,18 +45,50 @@ export class IndxeddbService {
         const salt = bcrypt.genSaltSync(10);
         if (oldVersion < 2) {
           const userStore = transaction.objectStore('users');
-          userStore.add({
-            id: uuidv4(),
-            email: 'liam@verdex.com',
-            password: bcrypt.hashSync("password123", salt),
-            name: 'Liam Smith',
-            address: '123 Main St, New York, NY',
-            phone: '0612345678',
-            birthday: '1990-01-01',
-            role: 'collector',
-            picture: ""
+          const collectors = [
+            {
+              id: uuidv4(),
+              email: 'liam@verdex.com',
+              password: bcrypt.hashSync("password123", salt),
+              name: 'Liam Smith',
+              address: '123 Main St, New York, NY',
+              phone: '0612345678',
+              birthday: '1990-01-01',
+              role: 'collector',
+              active: true,
+              picture: ""
+            },
+            {
+              id: uuidv4(),
+              email: 'noah@verdex.com',
+              password: bcrypt.hashSync("password123", salt),
+              name: 'Noah Miller',
+              address: '123 Hill St, Los Angeles, CA',
+              phone: '0612345684',
+              birthday: '1990-01-01',
+              role: 'collector',
+              active: true,
+              picture: ""
+            },
+            {
+              id: uuidv4(),
+              email: 'adam@verdex.com',
+              password: bcrypt.hashSync("password123", salt),
+              name: 'Adam Brown',
+              address: '123 River St, Chicago, IL',
+              phone: '0612345688',
+              birthday: '1990-01-01',
+              role: 'collector',
+              active: true,
+              picture: ""
+            }
+          ];
+
+          collectors.forEach(user => {
+            userStore.add(user);
           });
         }
+
       }
     });
   }

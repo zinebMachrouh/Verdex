@@ -1,1 +1,58 @@
-<app-request-list></app-request-list>
+<section id="library">
+  <div id="main">
+    <header>
+      <div class="brand">
+        <img src="assets/icon.png" alt="Logo">
+        <h2>Verdex</h2>
+      </div>
+      <nav>
+        <span>Overview</span>
+        <a routerLink="/dashboard" routerLinkActive="active"><i class="fa-solid fa-house"></i> Home</a>
+        <a routerLink="tracks" ><i class="fa-solid fa-music"></i> Songs</a>
+        <a routerLink="albums" routerLinkActive="active"><i class="fa-solid fa-record-vinyl"></i> Albums</a>
+        <a routerLink="podcasts"><i class="fa-solid fa-podcast"></i> Podcasts</a>
+        <a routerLink="#" (click)="logout()"><i class="fa-solid fa-right-from-bracket"></i> LogOut</a>
+      </nav>
+      <div class="collections">
+        <span class="c-span">Collectors</span>
+        <div class="c-bottom">
+          <div class="collection">
+            <div class="c-image">
+              <img src="assets/pfp.jpg" alt="pfp">
+            </div>
+            <div class="c-info">
+              <span>Liam</span>
+              <span>Collector</span>
+            </div>
+          </div>
+          <div class="collection">
+            <div class="c-image">
+              <img src="assets/pfp.jpg" alt="pfp">
+            </div>
+            <div class="c-info">
+              <span>Samuel</span>
+              <span>New Collector</span>
+            </div>
+          </div>
+          <div class="collection">
+            <div class="c-image">
+              <img src="assets/pfp.jpg" alt="pfp">
+            </div>
+            <div class="c-info">
+              <span>Adam</span>
+              <span>Collector</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="settings">
+        <span>Settings</span>
+        <a routerLink="/settings" routerLinkActive="active"><i class="fa-solid fa-gear"></i> Setting</a>
+        <a routerLink="#" (click)="logout()"><i class="fa-solid fa-right-from-bracket"></i> LogOut</a>
+      </div>
+    </header>
+    <main>
+      <app-request-list [user]="user"></app-request-list>
+    </main>
+  </div>
+</section>

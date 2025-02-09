@@ -1,0 +1,231 @@
+#library{
+  background-color: var(--light-blue);
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  overflow: hidden;
+
+  #main{
+    width: 100%;
+    padding: 0.7rem;
+    display: flex;
+    justify-content: space-between;
+    height: 100%;
+    gap: 0.7rem;
+    color: var(--night);
+
+    header{
+      background-color: var(--seasalt);
+      width: 14%;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      padding: 1.3rem 1rem;
+      gap: 1.8rem;
+
+      .brand{
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        img{
+          width: 30px;
+          height: 30px;
+          object-fit: cover;
+        }
+      }
+
+      nav{
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        border-radius: 10px;
+        background-color: var(--seasalt);
+        span{
+          opacity: 0.4;
+          font-size: 0.7rem;
+          text-transform: uppercase;
+        }
+        a{
+          color: var(--night);
+          text-decoration: none;
+          padding: 0.7rem 0.6rem;
+          border-radius: 7px;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          transition: 0.3s;
+
+          &:first-of-type {
+            padding-top: 0.3rem !important;
+          }
+
+          &:hover{
+            i{
+              color: var(--dark-cyan);
+            }
+          }
+          &.active{
+            i{
+              color: var(--dark-cyan);
+            }
+          }
+        }
+      }
+
+      .collections{
+        overflow: hidden;
+        margin-top: -20px;
+
+        .c-span{
+          opacity: 0.4;
+          font-size: 0.7rem;
+          text-transform: uppercase;
+        }
+
+        .c-bottom{
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+          padding: 0.6rem;
+
+          .collection{
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-radius: 7px;
+            transition: 0.3s;
+
+            &:hover{
+              .c-info{
+                span:first-child{
+                  text-decoration: underline;
+                  transition: all ease-in-out 0.3s;
+                }
+              }
+            }
+
+            .c-image{
+              width: 35px;
+              height: 35px;
+              overflow: hidden;
+              border-radius: 200px;
+              img{
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+              }
+            }
+
+            .c-info{
+              display: flex;
+              flex-direction: column;
+              gap: 0.2rem;
+
+              span:first-child{
+                font-weight: 500;
+              }
+              span:last-child{
+                font-size: 0.8rem;
+                letter-spacing: 1px;
+                opacity: 0.4;
+              }
+            }
+          }
+        }
+      }
+
+      .settings{
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        justify-self: flex-end;
+
+        span{
+          opacity: 0.4;
+          font-size: 0.7rem;
+          text-transform: uppercase;
+        }
+
+        a{
+          color: var(--night);
+          text-decoration: none;
+          padding: 0.3rem 0.6rem;
+          border-radius: 7px;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          transition: 0.3s;
+
+          &:hover{
+            i{
+              color: var(--dark-cyan);
+            }
+          }
+          &.active{
+            i{
+              color: var(--dark-cyan);
+            }
+          }
+        }
+      }
+    }
+    main{
+      background-color: var(--seasalt);
+      border-radius: 10px;
+      width: 86%;
+    }
+  }
+  #app-player{
+    width: 100% ;
+    height: 10%;
+  }
+}
+
+@media screen and (max-width: 500px){
+  header{
+    overflow: hidden;
+    gap: 1rem !important;
+    nav{
+      a{
+        gap: 2rem !important;
+      }
+    }
+
+    .collections{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding-top: 1rem !important;
+      .c-top{
+
+        span:first-child{
+          span{
+            display: none;
+          }
+          i{
+            margin-right: 0rem;
+          }
+        }
+        span:last-child{
+          display: none;
+        }
+      }
+
+      .c-bottom{
+        .collection{
+          .c-image{
+
+          }
+          .c-info{
+            display: none !important;
+          }
+        }
+      }
+    }
+  }
+}

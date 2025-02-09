@@ -1,1 +1,35 @@
-<p>request-list works!</p>
+<section id="app-track-list">
+  <header>
+    <h4>Welcome back, {{name}}! <br>
+      <span>{{requestsCount}} requests for you</span>
+    </h4>
+
+    <div class="search">
+      <button type="button"><i class="fa-solid fa-magnifying-glass"></i></button>
+      <input type="text" placeholder="Search by address, status or notes..." [formControl]="searchControl">
+    </div>
+
+    <div class="h-actions">
+      <button type="button" routerLink="settings" title="settings"><i class="fa-solid fa-bell"></i></button>
+      <button type="button" title="add track" (click)="openModal()"><i class="fa-solid fa-plus"></i></button>
+    </div>
+  </header>
+
+
+  <div class="tracks">
+    <div *ngIf="!requests.length">
+      <p>No requests found</p>
+    </div>
+    <div *ngFor="let request of requests; let i = index">
+    </div>
+  </div>
+</section>
+
+<app-request-form
+  [isVisible]="showModal"
+  [types]="types"
+  [request]="selectedRequest"
+  (close)="onCloseModal()"
+  (save)="onSaveRequest($event)">
+</app-request-form>
+

@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import {from, Observable} from "rxjs";
-import {IndxeddbService} from "../../../core/services/indxeddb.service";
-import {CollectionRequest} from "../models/request.model";
-import {v4 as uuidv4} from "uuid";
+import { from, Observable, of, throwError } from 'rxjs';
+import { IndxeddbService } from '../../../core/services/indxeddb.service';
+import { CollectionRequest } from '../models/request.model';
+import { v4 as uuidv4 } from 'uuid';
+import { catchError, map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -11,31 +12,60 @@ export class RequestService {
   constructor(private indexedDbService: IndxeddbService) {}
 
   getRequests(): Observable<CollectionRequest[]> {
-    return from(this.indexedDbService.getAll('requests'));
+    return from(this.indexedDbService.getAll('requests')).pipe(
+      catchError(err => {
+        console.error('Error fetching requests:', err);
+        return throwError(() => new Error('Failed to fetch requests.'));
+      })
+    );
   }
 
   addRequest(request: CollectionRequest): Observable<CollectionRequest> {
-    return from(this.createRequest(request));
+    return from(this.createRequest(request)).pipe(
+      catchError(err => {
+        console.error('Error adding request:', err);
+        return throwError(() => new Error('Failed to add request.'));
+      })
+    );
   }
 
   private async createRequest(request: CollectionRequest): Promise<CollectionRequest> {
-    const completeRequest = {
+    const completeRequest: CollectionRequest = {
       ...request,
       id: uuidv4(),
-      status: 'en attente',
-      points: this.calculatePoints(request),
-      created_at: new Date().toISOString()
+      status: 'pending',
+      // @ts-ignore
+      points: this.calculatePoints(request)
     };
+
 
     await this.indexedDbService.add('requests', completeRequest);
     return completeRequest;
   }
 
-  updateRequestStatus(requestId: string, status: string): Observable<CollectionRequest> {
-    return from(this.updateStatus(requestId, status));
+  private update(request: CollectionRequest): Promise<CollectionRequest> {
+    return this.indexedDbService.put('requests', request);
   }
 
-  private async updateStatus(requestId: string, status: string): Promise<CollectionRequest> {
+  updateRequest(request: CollectionRequest): Observable<CollectionRequest> {
+    return from(this.update(request)).pipe(
+      catchError(err => {
+        console.error('Error updating request:', err);
+        return throwError(() => new Error('Failed to update request.'));
+      })
+    );
+  }
+
+  updateRequestStatus(requestId: string, status: string): Observable<CollectionRequest> {
+    return from(this.updateStatus(requestId, status)).pipe(
+      catchError(err => {
+        console.error('Error updating request status:', err);
+        return throwError(() => new Error('Failed to update request status.'));
+      })
+    );
+  }
+
+  async updateStatus(requestId: string, status: string): Promise<CollectionRequest> {
     const request = await this.indexedDbService.get('requests', requestId);
 
     if (!request) {
@@ -48,11 +78,22 @@ export class RequestService {
   }
 
   deleteRequest(requestId: string): Observable<void> {
-    return from(this.indexedDbService.delete('requests', requestId));
+    return from(this.indexedDbService.delete('requests', requestId)).pipe(
+      catchError(err => {
+        console.error('Error deleting request:', err);
+        return throwError(() => new Error('Failed to delete request.'));
+      })
+    );
   }
 
   convertPoints(userId: string, points: number): Observable<number> {
-    return from(this.processPointsConversion(userId, points));
+    return from(this.processPointsConversion(userId, points)).pipe(
+      map(value => value || 0),
+      catchError(err => {
+        console.error('Error converting points:', err);
+        return of(0);
+      })
+    );
   }
 
   private async processPointsConversion(userId: string, points: number): Promise<number> {
@@ -61,23 +102,30 @@ export class RequestService {
       200: 120,
       500: 350
     };
-
-    // @ts-ignore
+    //@ts-ignore
     return pointsValues[points] || 0;
   }
 
   private calculatePoints(request: CollectionRequest): number {
     const pointRates = {
-      'plastique': 2,
-      'verre': 1,
-      'papier': 1,
-      'métal': 5
+      plastic: 2,
+      glass: 1,
+      paper: 1,
+      metal: 5
     };
 
     return request.types.reduce((total, type) => {
-      // @ts-ignore
+      //@ts-ignore
       const rate = pointRates[type] || 0;
-      return total + (rate * request.weight);
+      return total + rate * (request.weight || 0);
     }, 0);
+  }
+
+  storeImage(file: File): Promise<string> {
+    return this.indexedDbService.storeImage(file);
+  }
+
+  getImage(key: any): Promise<string | null> {
+    return this.indexedDbService.getImageBlob('requests', key);
   }
 }
