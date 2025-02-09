@@ -10,8 +10,12 @@
     </div>
 
     <div class="h-actions">
-      <button type="button" routerLink="settings" title="settings"><i class="fa-solid fa-bell"></i></button>
-      <button type="button" title="add track" (click)="openModal()"><i class="fa-solid fa-plus"></i></button>
+      <button *ngIf="!isUser" type="button" title="notifications"><i class="fa-solid fa-bell"></i></button>
+      <button *ngIf="isUser" type="button" title="add track" (click)="openModal()"><i class="fa-solid fa-plus"></i></button>
+      <button type="button" title="profile" class="profile" style="display: flex; align-items: center; justify-content: center">
+        <img *ngIf="user.picture" [src]="user.picture" alt="avatar" style="width: 40px; height: 40px; border-radius: 200px; object-fit: cover">
+        <span *ngIf="!user.picture">{{user.name.charAt(0).toUpperCase()}}</span>
+      </button>
     </div>
   </header>
 

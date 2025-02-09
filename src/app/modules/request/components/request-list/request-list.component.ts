@@ -30,9 +30,16 @@ export class RequestListComponent  implements OnInit{
   activeType: string = 'all';
   types = ['plastic', 'paper', 'glass', 'metal'];
   user: any;
+  isUser: boolean = false;
 
   constructor(private requestService: RequestService) {
     this.user = JSON.parse(<string>sessionStorage.getItem('currentUser'));
+
+    if (this.user.role === 'user') {
+      this.isUser = true;
+    }else {
+      this.isUser = false;
+    }
   }
 
   ngOnInit(): void {

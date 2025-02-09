@@ -172,6 +172,15 @@
           width: 35px;
           height: 35px;
           font-size: 0.9rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+        }
+        .profile{
+          background: red !important;
+          width: 30px !important;
+          height: 30px !important;
         }
       }
     }
