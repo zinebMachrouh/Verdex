@@ -18,8 +18,6 @@ import {NgClass, NgForOf, NgIf} from "@angular/common";
 export class RequestFormComponent {
   @Input() types: string[] = [];
   @Input() isVisible = false;
-  @Input() maxRequestsAllowed = 3;
-  @Input() totalWeightLimit = 10_000;
   @Input() currentPendingRequests: CollectionRequest[] = [];
   @Input() request: CollectionRequest | null = null;
   @Output() close = new EventEmitter<void>();
@@ -27,6 +25,9 @@ export class RequestFormComponent {
 
   requestForm: FormGroup;
   selectedFile: File | null = null;
+
+  maxRequestsAllowed = 3;
+  totalWeightLimit = 10_000;
 
   constructor(private fb: FormBuilder) {
     this.requestForm = this.fb.group({
@@ -69,6 +70,7 @@ export class RequestFormComponent {
     if (this.requestForm.valid) {
       const requestData = this.requestForm.value;
       this.save.emit({ requestData, wastePhoto: this.selectedFile });
+      this.requestForm.reset();
     }
   }
 
@@ -76,6 +78,8 @@ export class RequestFormComponent {
     const activeRequests = this.currentPendingRequests.filter(
       req => req.status === 'pending' || req.status === 'rejected'
     ).length;
+
+    console.log(activeRequests);
 
     if (activeRequests >= this.maxRequestsAllowed) {
       alert(`Maximum of ${this.maxRequestsAllowed} active requests allowed.`);
@@ -95,16 +99,28 @@ export class RequestFormComponent {
     return false;
   }
 
-  private validateTimeSlot(control: any):  boolean  | null {
+  private validateTimeSlot(control: any): boolean | null {
     const schedule = new Date(control.value);
-    const hours = schedule.getHours();
-    if (hours < 9 || hours > 18) {
-      alert('The schedule time must be between 09:00 and 18:00.');
+    const currentDate = new Date();
+
+    const tomorrow = new Date();
+    tomorrow.setHours(0, 0, 0, 0);
+    tomorrow.setDate(currentDate.getDate() + 1);
+
+    if (schedule < tomorrow) {
+      alert('The schedule date must be from tomorrow onward.');
       return false;
-    }else {
-      return true;
     }
+
+    const hours = schedule.getHours();
+    if (hours < 9 || hours > 18 || (hours === 18 && schedule.getMinutes() > 0)) {
+      alert('The schedule time must be between 09:00 AM and 06:00 PM.');
+      return false;
+    }
+
+    return true;
   }
+
 
   onFileChange(event: Event): void {
     const input = event.target as HTMLInputElement;

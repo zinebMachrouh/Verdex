@@ -55,7 +55,7 @@
       <textarea id="notes" formControlName="notes" class="form-control" rows="3" placeholder="Additional notes"></textarea>
 
       <div class="actions">
-        <button type="button" class="cancel" (click)="closeModal()">Cancel</button>
+        <button type="reset" class="cancel" (click)="closeModal()">Cancel</button>
         <button type="submit" [disabled]="requestForm.invalid" [ngClass]="{ 'disabled-save': requestForm.invalid, 'save': !requestForm.invalid }">Save</button>
       </div>
     </form>

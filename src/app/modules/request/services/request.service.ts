@@ -122,7 +122,7 @@ export class RequestService {
     return request.types.reduce((total, type) => {
       //@ts-ignore
       const rate = pointRates[type] || 0;
-      return total + rate * (request.weight || 0);
+      return total + rate * (request.weight/1000 || 0);
     }, 0);
   }
 

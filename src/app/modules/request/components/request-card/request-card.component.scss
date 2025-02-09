@@ -1,0 +1,134 @@
+.card{
+  width: 280px;
+  height: 320px;
+  background: #fff;
+  border: 2px solid rgba(208, 209, 209, 0.73);
+  padding: 5px;
+  border-radius: 15px;
+
+  &:hover{
+    transition: all 0.3s ease-in-out;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+  }
+
+  .card-top{
+    width: 100%;
+    height: 220px;
+    background: #C3E0E0;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+
+    .info-top{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .schedule{
+        background: var(--seasalt);
+        padding: 10px;
+        border-radius: 200px;
+        text-align: center;
+        font-size: 0.9rem;
+
+        .date{
+          display: block;
+        }
+        .time{
+          display: none;
+        }
+
+        &:hover{
+          transition: all 0.3s ease-in-out;
+          .date{
+            display: none;
+            transition: all 0.3s ease-in-out;
+
+          }
+          .time{
+            display: block;
+            transition: all 0.3s ease-in-out;
+
+          }
+        }
+      }
+
+      .delete{
+        background: var(--seasalt);
+        width: 30px;
+        height: 30px;
+        border-radius: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+        cursor: pointer;
+        border: none;
+        outline: none;
+      }
+    }
+
+    .info-bottom{
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+
+      .info-types{
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        flex-wrap: wrap;
+        font-size: 0.9rem;
+        color: var(--night);
+
+        .type{
+          background: transparent;
+          border: 2px solid var(--night);
+          padding: 7px 10px;
+          border-radius: 200px;
+        }
+      }
+    }
+  }
+
+  .card-bottom{
+    height: 100px;
+    width: 100%;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    div{
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      color: var(--night);
+
+    }
+
+    button{
+      background: var(--night);
+      padding: 10px 15px;
+      border-radius: 200px;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      color: var(--seasalt);
+      font-size: 0.9rem;
+      transition: all 0.3s ease-in-out;
+
+      &:hover{
+        background: #1E1E1E;
+        text-decoration: underline;
+        transition: all 0.3s ease-in-out;
+      }
+    }
+  }
+}

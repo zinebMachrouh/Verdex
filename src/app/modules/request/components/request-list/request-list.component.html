@@ -19,12 +19,24 @@
     </div>
   </header>
 
-
+  <div class="types">
+    <button
+      type="button"
+      [ngClass]="{'active': activeType === 'all'}"
+      (click)="getAllRequests()">All</button>
+    <button
+      *ngFor="let type of types"
+      [ngClass]="{ 'active': activeType === type }"
+      (click)="filterRequests(type)">
+      {{ type }}
+    </button>
+  </div>
   <div class="tracks">
     <div *ngIf="!requests.length">
       <p>No requests found</p>
     </div>
     <div *ngFor="let request of requests; let i = index">
+      <app-request-card [request]="request" (delete)="deleteRequest(request.id)" (edit)="editRequest(request)" [isUser]="isUser"></app-request-card>
     </div>
   </div>
 </section>
@@ -33,6 +45,7 @@
   [isVisible]="showModal"
   [types]="types"
   [request]="selectedRequest"
+  [currentPendingRequests]="currentPendingRequests"
   (close)="onCloseModal()"
   (save)="onSaveRequest($event)">
 </app-request-form>

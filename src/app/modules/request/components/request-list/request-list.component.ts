@@ -1,21 +1,23 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {RouterLink} from "@angular/router";
 import {FormControl, ReactiveFormsModule} from "@angular/forms";
-import {NgForOf, NgIf} from "@angular/common";
+import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {debounceTime, distinctUntilChanged} from "rxjs";
 import {RequestService} from "../../services/request.service";
 import {CollectionRequest} from "../../models/request.model";
 import {RequestFormComponent} from "../request-form/request-form.component";
+import {RequestCardComponent} from "../request-card/request-card.component";
 
 @Component({
   selector: 'app-request-list',
   standalone: true,
   imports: [
-    RouterLink,
     ReactiveFormsModule,
     NgIf,
     NgForOf,
-    RequestFormComponent
+    RequestFormComponent,
+    RequestCardComponent,
+    NgClass
   ],
   templateUrl: './request-list.component.html',
   styleUrl: './request-list.component.scss'
@@ -31,9 +33,11 @@ export class RequestListComponent  implements OnInit{
   types = ['plastic', 'paper', 'glass', 'metal'];
   user: any;
   isUser: boolean = false;
+  currentPendingRequests: CollectionRequest[] = [];
 
   constructor(private requestService: RequestService) {
     this.user = JSON.parse(<string>sessionStorage.getItem('currentUser'));
+    this.getAllRequests();
 
     if (this.user.role === 'user') {
       this.isUser = true;
@@ -43,8 +47,6 @@ export class RequestListComponent  implements OnInit{
   }
 
   ngOnInit(): void {
-    this.getAllRequests();
-
 
     this.searchControl.valueChanges.pipe(
       debounceTime(300),
@@ -59,12 +61,14 @@ export class RequestListComponent  implements OnInit{
     this.selectedRequest = null;
   }
 
-  private getAllRequests() {
+  protected getAllRequests() {
     this.activeType = 'all';
     this.requestService.getRequests().subscribe(requests => {
-      this.requests = requests;
-      this.originalRequests = requests;
-      this.requestsCount = requests.length;
+      this.requests = requests.filter(request => request.userId === this.user.id);
+      this.originalRequests = [...this.requests];
+      this.requestsCount = this.requests.length;
+      this.currentPendingRequests = this.requests.filter(request => request.status === 'pending' && request.userId === this.user.id);
+
     });
   }
 
@@ -98,7 +102,7 @@ export class RequestListComponent  implements OnInit{
   filterRequests(type: string) {
     this.activeType = type;
     this.requests = this.originalRequests.filter(request =>
-     request.status.toLowerCase() === type.toLowerCase() || type === 'all'
+     request.types.includes(type) && request.userId === this.user.id
     )
   }
 
