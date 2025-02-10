@@ -1,0 +1,47 @@
+<div class="card">
+  <div class="card-top" >
+    <div class="info-top">
+      <div class="schedule">
+        <h4 class="date">{{formatScheduleDate(request.schedule)}}</h4>
+        <h4 class="time">{{formatScheduleTime(request.schedule)}}</h4>
+      </div>
+      <button *ngIf="isUser && request.status === 'pending'" type="button" class="delete" (click)="onDelete()">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <button *ngIf="!isUser" type="button" class="delete">
+        <i class="fa-regular fa-bookmark"></i>
+      </button>
+    </div>
+    <div class="info-bottom">
+      <h4>{{request.points}}pts</h4>
+      <div class="info-types">
+        <div class="type" *ngFor="let type of request.types">
+          <span>{{type}}</span>
+        </div>
+      </div>
+      <span *ngIf="request.notes">{{request.notes}}</span>
+    </div>
+  </div>
+  <div class="card-bottom">
+    <div>
+      <h4>{{request.weight/1000}} Kg</h4>
+      <span style="opacity: 0.7">{{request.address}}</span>
+    </div>
+    <div>
+      <button *ngIf="isUser && request.status === 'pending'" type="button" class="edit" (click)="onEdit()">
+       {{request.status}}
+      </button>
+      <div *ngIf="!isUser && request.status === 'pending'"  class="actions">
+        <button type="button" class="reject" (click)="updateStatus('rejected')">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <button type="button" class="accept" (click)="updateStatus('approved')">
+          <i class="fa-solid fa-check"></i>
+        </button>
+      </div>
+      <button *ngIf="request.status != 'pending'" type="button" class="edit">
+        {{request.status}}
+      </button>
+    </div>
+  </div>
+</div>

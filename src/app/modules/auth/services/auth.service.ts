@@ -6,6 +6,7 @@ import {IndxeddbService} from "../../../core/services/indxeddb.service";
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private sessionExpiry = 45 * 60 * 1000;
+  currentUser$: any;
 
   constructor(private dbService: IndxeddbService) {}
 
@@ -68,6 +69,7 @@ export class AuthService {
         return 'Incorrect password';
       }
       this.startSession(user);
+      this.currentUser$ = user;
       return 'Login successful';
     } catch (error) {
       console.error('Login failed', error);
@@ -76,12 +78,14 @@ export class AuthService {
   }
 
   private startSession(user: any): void {
+    this.currentUser$ = user;
     sessionStorage.setItem('currentUser', JSON.stringify(user));
     setTimeout(() => {
       sessionStorage.removeItem('currentUser');
       alert('Session expired. Please login again.');
     }, this.sessionExpiry);
   }
+
 
   private convertImageToBase64(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -90,5 +94,17 @@ export class AuthService {
       reader.onload = () => resolve(reader.result as string);
       reader.onerror = error => reject(error);
     });
+  }
+
+
+  public isAuthenticated(): boolean {
+    const user = sessionStorage.getItem('currentUser');
+    return user !== null && user !== undefined;
+  }
+
+
+  public logout(): void {
+    sessionStorage.removeItem('currentUser');
+
   }
 }
