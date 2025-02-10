@@ -4,6 +4,7 @@ import { IndxeddbService } from '../../../core/services/indxeddb.service';
 import { CollectionRequest } from '../models/request.model';
 import { v4 as uuidv4 } from 'uuid';
 import { catchError, map } from 'rxjs/operators';
+import {ProfileService} from "../../user/services/profile.service";
 
 @Injectable({
   providedIn: 'root'
@@ -51,7 +52,6 @@ export class RequestService {
   private update(request: CollectionRequest): Promise<CollectionRequest> {
     const completeRequest: CollectionRequest = {
       ...request,
-      status: 'pending',
       userId: this.userId,
       collectorId : '',
       // @ts-ignore
@@ -78,16 +78,32 @@ export class RequestService {
     );
   }
 
-  async updateStatus(requestId: string, status: string): Promise<CollectionRequest> {
+  private async updateStatus(requestId: string, status: string): Promise<CollectionRequest> {
     const request = await this.indexedDbService.get('requests', requestId);
-
     if (!request) {
       throw new Error('Request not found');
     }
 
     const updatedRequest = { ...request, status };
     await this.indexedDbService.put('requests', updatedRequest);
+
+    if (status.toLowerCase() === 'approved') {
+      await this.updateUserPoints(request.userId, request.points);
+    }
+
     return updatedRequest;
+  }
+
+  private async updateUserPoints(userId: string, points: number): Promise<void> {
+    const user = await this.indexedDbService.get('users', userId);
+    if (user) {
+      console.log('User found for point update:', user);
+      console.log('Adding points:', points);
+      const updatedUser = { ...user, points: user.points + points };
+      await this.indexedDbService.put('users', updatedUser);
+    } else {
+      console.warn('User not found for point update.');
+    }
   }
 
   deleteRequest(requestId: string): Observable<void> {

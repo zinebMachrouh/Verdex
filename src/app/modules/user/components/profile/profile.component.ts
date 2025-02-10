@@ -1,9 +1,10 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {NgForOf, NgIf} from "@angular/common";
-import {FormBuilder, FormGroup, ReactiveFormsModule} from "@angular/forms";
-import {ProfileService} from "../../services/profile.service";
-import {Clipboard} from "@angular/cdk/clipboard";
-import {v4 as uuidv4} from 'uuid';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { NgForOf, NgIf } from "@angular/common";
+import { FormBuilder, FormGroup, ReactiveFormsModule } from "@angular/forms";
+import { ProfileService } from "../../services/profile.service";
+import { Clipboard } from "@angular/cdk/clipboard";
+import { v4 as uuidv4 } from 'uuid';
+import {RequestService} from "../../../request/services/request.service";
 
 @Component({
   selector: 'app-profile',
@@ -16,14 +17,11 @@ import {v4 as uuidv4} from 'uuid';
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })
-export class ProfileComponent {
+export class ProfileComponent implements OnChanges {
   @Input() isVisible: boolean = false;
   @Input() user!: any;
+  @Input() requests: any[] = [];
   @Output() close = new EventEmitter<void>();
-
-  onClose() {
-    this.close.emit();
-  }
 
   profileForm: FormGroup;
   points: number = 0;
@@ -38,28 +36,34 @@ export class ProfileComponent {
   constructor(
     private fb: FormBuilder,
     private profileService: ProfileService,
+    private requestsService: RequestService,
     private clipboard: Clipboard
   ) {
     this.profileForm = this.fb.group({
       name: [''],
       email: ['']
     });
-
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['user'] && this.user) {
+      this.profileForm.patchValue(this.user);
+    }
 
-  onUpdate() {
-
+    this.points = this.user.points;
   }
 
-  onDelete() {
-
+  onClose() {
+    this.close.emit();
   }
 
   convertPoints(pointsRequired: number, voucherValue: number) {
     if (this.points >= pointsRequired) {
-      this.points -= pointsRequired;
       this.voucherCode = uuidv4();
+
+      this.requestsService.convertPoints(this.user.id, pointsRequired).subscribe();
+      this.points -= pointsRequired;
+
       alert(`You have redeemed a voucher worth ${voucherValue} Dh!`);
     } else {
       alert('Not enough points to redeem this voucher.');
@@ -71,5 +75,13 @@ export class ProfileComponent {
       this.clipboard.copy(this.voucherCode);
       alert('Voucher code copied to clipboard!');
     }
+  }
+
+  onUpdate() {
+
+  }
+
+  onDelete() {
+
   }
 }

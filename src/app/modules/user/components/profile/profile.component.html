@@ -3,34 +3,38 @@
     <button (click)="onClose()"><i class="fa-solid fa-xmark"></i></button>
   </div>
   <div class="modal">
-    <h2>User Profile</h2>
-
-    <form [formGroup]="profileForm" (ngSubmit)="onUpdate()">
-      <div>
-        <label for="name">Name:</label>
-        <input id="name" formControlName="name" type="text">
+    <div class="card">
+      <div class="image">
+        <img [src]="user.picture" alt="Profile Picture">
       </div>
-      <div>
-        <label for="email">Email:</label>
-        <input id="email" formControlName="email" type="email">
+      <div class="card-info">
+        <form [formGroup]="profileForm" (ngSubmit)="onUpdate()">
+          <div>
+            <label for="name">Name:</label>
+            <input id="name" formControlName="name" type="text">
+          </div>
+          <div>
+            <label for="email">Email:</label>
+            <input id="email" formControlName="email" type="email">
+          </div>
+          <button type="submit">Update Profile</button>
+        </form>
       </div>
-      <button type="submit">Update Profile</button>
-    </form>
+      <button class="delete-btn" (click)="onDelete()">Delete Profile</button>
 
-    <button class="delete-btn" (click)="onDelete()">Delete Profile</button>
-
-    <div class="points-section">
-      <h3>Your Points: {{ points }}</h3>
-      <div *ngFor="let conversion of conversions">
-        <button [disabled]="points < conversion.points" (click)="convertPoints(conversion.points, conversion.value)">
-          Convert {{ conversion.points }} points for {{ conversion.value }} Dh Voucher
-        </button>
+      <div class="points-section">
+        <h3>Your Points: {{ points }}</h3>
+        <div *ngFor="let conversion of conversions">
+          <button [disabled]="points < conversion.points" (click)="convertPoints(conversion.points, conversion.value)">
+            Convert {{ conversion.points }} points for {{ conversion.value }} Dh Voucher
+          </button>
+        </div>
       </div>
-    </div>
 
-    <div *ngIf="voucherCode" class="voucher-section">
-      <p>Your Voucher Code: <strong>{{ voucherCode }}</strong></p>
-      <button (click)="copyToClipboard()">Copy Code</button>
+      <div *ngIf="voucherCode" class="voucher-section">
+        <p>Your Voucher Code: <strong>{{ voucherCode }}</strong></p>
+        <button (click)="copyToClipboard()">Copy Code</button>
+      </div>
     </div>
   </div>
 </div>

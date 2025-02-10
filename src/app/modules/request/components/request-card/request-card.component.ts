@@ -48,6 +48,6 @@ export class RequestCardComponent {
 
   updateStatus(status: string) {
     this.requestService.updateRequestStatus(this.request.id, status).subscribe();
-    window.location.reload();
+    //window.location.reload();
   }
 }

@@ -30,16 +30,10 @@ export class ProfileService {
     await this.dbService.put(this.usersTable, updatedUser);
   }
 
-  /**
-   * Delete user profile
-   */
   async deleteUserProfile(userId: string): Promise<void> {
     await this.dbService.delete(this.usersTable, userId);
   }
 
-  /**
-   * Convert user points to vouchers
-   */
   async convertPoints(userId: string, points: number): Promise<string | null> {
     const user = await this.getUserProfile(userId);
     if (!user) {
@@ -50,20 +44,15 @@ export class ProfileService {
       throw new Error('Insufficient points or invalid conversion amount');
     }
 
-    // Deduct points
     user.points -= points;
     await this.dbService.put(this.usersTable, user);
 
-    // Generate unique voucher code
     const voucherCode = `VOUCHER-${uuidv4().slice(0, 8)}`;
     console.log(`Voucher generated: ${voucherCode}`);
 
     return voucherCode;
   }
 
-  /**
-   * Store profile picture as a base64 string
-   */
   async updateProfilePicture(userId: string, file: File): Promise<void> {
     const user = await this.getUserProfile(userId);
     if (!user) {
