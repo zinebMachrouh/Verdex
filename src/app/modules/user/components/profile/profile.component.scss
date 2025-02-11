@@ -17,7 +17,7 @@
     right: 1rem;
 
     button {
-      color: var(--night);
+      color: var(--seasalt);
       cursor: pointer;
       background-color: transparent;
       border: none;
@@ -26,20 +26,175 @@
 
     }
   }
-
-  .modal {
-    background-color: var(--seasalt);
-    padding: 2rem;
-    border-radius: 10px;
-    width: 40%;
-    height: fit-content;
+  .card {
+    width: 350px;
+    height: 410px;
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 10px;
+    background-color: #fffffe;
+    border-radius: 15px;
     position: relative;
-    overflow: auto;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    color: var(--night);
+    overflow: hidden;
   }
+
+  .card::before {
+    content: "";
+    width: 350px;
+    height: 60px;
+    position: absolute;
+    top: 0;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border-bottom: 3px solid #fefefe;
+    transition: all 0.5s ease;
+    background: url("/assets/bg.png") no-repeat center center;
+  }
+
+  .card * {
+    z-index: 1;
+  }
+
+  .image {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    border: 4px solid #fefefe;
+    margin-top: 0px;
+    transition: all 0.5s ease;
+
+    img{
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+  }
+
+  .card-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    transition: all 0.5s ease;
+
+    .points-section{
+      width: 90%;
+
+      .conversions-container{
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px 0px 5px;
+
+        .conversion{
+          width: 48%;
+          button{
+            padding: 5px;
+            width: 100%;
+            background-color: transparent;
+            color: var(--night);
+            font-weight: 600;
+            border: 2px solid var(--night);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+
+            &:disabled{
+              opacity: 0.5;
+              cursor: not-allowed;
+            }
+          }
+        }
+      }
+    }
+
+    .delete-btn{
+      width: 90%;
+      padding: 10px;
+      background-color: #f13131;
+      color: #fffffe;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 600;
+
+      &:hover{
+        background-color: #f33434;
+      }
+    }
+
+    form{
+      width: 90%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      button{
+        padding: 10px;
+        background-color: var(--night);
+        border: 2px solid var(--night);
+        color: #fffffe;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+
+        &:hover{
+          background: transparent;
+          color: var(--night);
+        }
+      }
+
+      .group{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        div{
+          display: flex;
+          flex-direction: column;
+          gap: 5px;
+
+          label{
+            font-size: 14px;
+            color: var(--night);
+            text-align: center;
+          }
+          input{
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #1A7D7B;
+            border-radius: 3px;
+          }
+        }
+      }
+    }
+  }
+
+
+  .card:hover::before {
+    width: 350px;
+    height: 410px;
+    border-bottom: none;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    transform: scale(0.95);
+  }
+
+  .card:hover .card-info {
+    transform: translate(0%,-15%);
+  }
+
+  .card:hover .image {
+    transform: scale(2) translate(-60%,-40%);
+  }
+
+
 }

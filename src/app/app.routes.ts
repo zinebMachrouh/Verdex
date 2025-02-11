@@ -7,8 +7,7 @@ import {AuthGuard} from "./modules/auth/guards/auth.guard";
 import {userResolver} from "./modules/auth/resolvers/user.resolver";
 
 export const routes: Routes = [
-  {path: '', redirectTo: 'home', pathMatch: 'full'},
-  {path: 'home', component: HomeComponent},
+  {path: '', redirectTo: 'login', pathMatch: 'full'},
   {path: 'login', component: LoginComponent},
   {path: 'register', component: RegisterComponent},
   {

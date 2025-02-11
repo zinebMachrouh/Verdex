@@ -3,34 +3,53 @@
     <button (click)="onClose()"><i class="fa-solid fa-xmark"></i></button>
   </div>
   <div class="modal">
-    <h2>User Profile</h2>
-
-    <form [formGroup]="profileForm" (ngSubmit)="onUpdate()">
-      <div>
-        <label for="name">Name:</label>
-        <input id="name" formControlName="name" type="text">
+    <div class="card">
+      <div class="image">
+        <img [src]="user.picture" alt="Profile Picture" *ngIf="user.picture">
+        <img src="assets/profile.jpg" alt="Profile Picture" *ngIf="!user.picture">
       </div>
-      <div>
-        <label for="email">Email:</label>
-        <input id="email" formControlName="email" type="email">
+
+      <div class="card-info">
+
+        <div class="points-section" *ngIf="isUser">
+          <h3>Your Points: {{ points }}</h3>
+          <div class="conversions-container">
+            <div *ngFor="let conversion of conversions" class="conversion">
+              <button [disabled]="points < conversion.points"
+                      (click)="convertPoints(conversion.points, conversion.value)">
+                {{ conversion.points }}pts : {{ conversion.value }} Dh
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <form [formGroup]="profileForm" (ngSubmit)="onUpdate()">
+          <div class="group">
+            <div>
+              <label for="name">Name</label>
+              <input id="name" formControlName="name" type="text">
+            </div>
+            <div>
+              <label for="email">Email</label>
+              <input id="email" formControlName="email" type="email">
+            </div>
+          </div>
+          <div class="group">
+            <div>
+              <label for="phone">Phone</label>
+              <input id="phone" formControlName="phone" type="text">
+            </div>
+            <div>
+              <label for="address">Address</label>
+              <input id="address" formControlName="address" type="text">
+            </div>
+          </div>
+          <button type="submit">Update Profile</button>
+        </form>
+        <button class="delete-btn" (click)="onDelete()">Delete Profile</button>
+
       </div>
-      <button type="submit">Update Profile</button>
-    </form>
 
-    <button class="delete-btn" (click)="onDelete()">Delete Profile</button>
-
-    <div class="points-section">
-      <h3>Your Points: {{ points }}</h3>
-      <div *ngFor="let conversion of conversions">
-        <button [disabled]="points < conversion.points" (click)="convertPoints(conversion.points, conversion.value)">
-          Convert {{ conversion.points }} points for {{ conversion.value }} Dh Voucher
-        </button>
-      </div>
-    </div>
-
-    <div *ngIf="voucherCode" class="voucher-section">
-      <p>Your Voucher Code: <strong>{{ voucherCode }}</strong></p>
-      <button (click)="copyToClipboard()">Copy Code</button>
     </div>
   </div>
 </div>

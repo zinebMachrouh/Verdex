@@ -42,6 +42,7 @@ export class AuthService {
         birthday,
         role,
         active: true,
+        points: 0,
         picture: profilePicture ? await this.convertImageToBase64(profilePicture) : ''
       };
 

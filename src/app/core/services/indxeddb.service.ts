@@ -27,6 +27,7 @@ export class IndxeddbService {
           userStore.createIndex('phone', 'phone', { unique: true });
           userStore.createIndex('birthday', 'birthday');
           userStore.createIndex('role', 'role');
+          userStore.createIndex('points', 'points');
           userStore.createIndex('picture', 'picture');
 
           const requestStore = db.createObjectStore('requests', { keyPath: 'id', autoIncrement: true });
@@ -56,6 +57,7 @@ export class IndxeddbService {
               birthday: '1990-01-01',
               role: 'collector',
               active: true,
+              points: 0,
               picture: ""
             },
             {
@@ -68,6 +70,7 @@ export class IndxeddbService {
               birthday: '1990-01-01',
               role: 'collector',
               active: true,
+              points: 0,
               picture: ""
             },
             {
@@ -80,6 +83,7 @@ export class IndxeddbService {
               birthday: '1990-01-01',
               role: 'collector',
               active: true,
+              points: 0,
               picture: ""
             }
           ];
